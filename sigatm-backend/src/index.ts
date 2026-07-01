@@ -1,1 +1,5 @@
-console.log("-APP SIGATM-");
+import { menuPrincipal } from './menu/menuPrincipal';
+
+(async () => {
+  await menuPrincipal();
+})();
