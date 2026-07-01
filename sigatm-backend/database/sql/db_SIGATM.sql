@@ -1,20 +1,16 @@
--- Crear la base de datos
 CREATE DATABASE IF NOT EXISTS sigatm_in5cm;
 USE sigatm_in5cm;
 
--- 1. Rol
 CREATE TABLE Rol (
     id_rol INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL UNIQUE
 );
 
--- 2. Departamento
 CREATE TABLE Departamento (
     id_departamento INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL UNIQUE
 );
 
--- 3. Usuario
 CREATE TABLE Usuario (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -29,13 +25,11 @@ CREATE TABLE Usuario (
     FOREIGN KEY (id_departamento) REFERENCES Departamento(id_departamento)
 );
 
--- 4. TipoEquipo
 CREATE TABLE TipoEquipo (
     id_tipo_equipo INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL UNIQUE
 );
 
--- 5. Proveedor
 CREATE TABLE Proveedor (
     id_proveedor INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL UNIQUE,
@@ -43,7 +37,6 @@ CREATE TABLE Proveedor (
     direccion VARCHAR(200)
 );
 
--- 6. Equipo
 CREATE TABLE Equipo (
     id_equipo INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -59,14 +52,12 @@ CREATE TABLE Equipo (
     FOREIGN KEY (id_departamento) REFERENCES Departamento(id_departamento)
 );
 
--- 7. Técnico
 CREATE TABLE Tecnico (
     id_tecnico INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL UNIQUE,
     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
 
--- 8. Reporte
 CREATE TABLE Reporte (
     id_reporte INT AUTO_INCREMENT PRIMARY KEY,
     fecha_reporte DATETIME NOT NULL,
@@ -77,7 +68,6 @@ CREATE TABLE Reporte (
     FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
 
--- 9. Diagnostico
 CREATE TABLE Diagnostico (
     id_diagnostico INT AUTO_INCREMENT PRIMARY KEY,
     fecha_diagnostico DATETIME NOT NULL,
@@ -88,7 +78,6 @@ CREATE TABLE Diagnostico (
     FOREIGN KEY (id_tecnico) REFERENCES Tecnico(id_tecnico)
 );
 
--- 10. Mantenimiento
 CREATE TABLE Mantenimiento (
     id_mantenimiento INT AUTO_INCREMENT PRIMARY KEY,
     fecha_mantenimiento DATETIME NOT NULL,
@@ -100,7 +89,6 @@ CREATE TABLE Mantenimiento (
     FOREIGN KEY (id_tecnico) REFERENCES Tecnico(id_tecnico)
 );
 
--- 11. Repuesto
 CREATE TABLE Repuesto (
     id_repuesto INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -110,7 +98,6 @@ CREATE TABLE Repuesto (
     FOREIGN KEY (id_proveedor) REFERENCES Proveedor(id_proveedor)
 );
 
--- 12. HistorialMantenimiento
 CREATE TABLE HistorialMantenimiento (
     id_historial INT AUTO_INCREMENT PRIMARY KEY,
     id_equipo INT NOT NULL,
@@ -121,7 +108,6 @@ CREATE TABLE HistorialMantenimiento (
     FOREIGN KEY (id_mantenimiento) REFERENCES Mantenimiento(id_mantenimiento)
 );
 
--- 13. Mantenimiento_Repuesto 
 CREATE TABLE Mantenimiento_Repuesto (
     id_mantenimiento INT NOT NULL,
     id_repuesto INT NOT NULL,
