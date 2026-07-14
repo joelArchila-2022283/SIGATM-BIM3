@@ -1,5 +1,3 @@
-import { menuPrincipal } from './menu/menuPrincipal';
+import { iniciarMenu } from './menu/menuPrincipal';
 
-(async () => {
-  await menuPrincipal();
-})();
+iniciarMenu();
