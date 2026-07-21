@@ -1,27 +1,40 @@
 import { Equipo } from '../models/equipo';
 import { equiposSimulados } from '../data/equiposData';
+import { Repositorio } from './baseRepository';
 
-export const equipoRepository = {
-    obtenerTodos: (): Equipo[] => {
-        return equiposSimulados;
-    },
-    obtenerPorId: (id: number): Equipo | undefined => {
-        return equiposSimulados.find(e => e.id === id);
-    },
-    guardar: (equipo: Equipo): Equipo => {
-        equiposSimulados.push(equipo);
+export class EquipoRepository implements Repositorio<Equipo> {
+    private datos: Equipo[];
+
+    constructor() {
+        this.datos = equiposSimulados;
+    }
+
+    public obtenerTodos(): Equipo[] {
+        return this.datos;
+    }
+
+    public obtenerPorId(id: number): Equipo | undefined {
+        return this.datos.find(e => e.id === id);
+    }
+
+    public guardar(equipo: Equipo): Equipo {
+        this.datos.push(equipo);
         return equipo;
-    },
-    actualizar: (id: number, datos: Partial<Equipo>): boolean => {
-        const indice = equiposSimulados.findIndex(e => e.id === id);
+    }
+
+    public actualizar(id: number, datos: Partial<Equipo>): boolean {
+        const indice = this.datos.findIndex(e => e.id === id);
         if (indice === -1) return false;
-        equiposSimulados[indice] = { ...equiposSimulados[indice], ...datos };
-        return true;
-    },
-    eliminar: (id: number): boolean => {
-        const indice = equiposSimulados.findIndex(e => e.id === id);
-        if (indice === -1) return false;
-        equiposSimulados.splice(indice, 1);
+
+        this.datos[indice] = { ...this.datos[indice], ...datos };
         return true;
     }
-};
+
+    public eliminar(id: number): boolean {
+        const indice = this.datos.findIndex(e => e.id === id);
+        if (indice === -1) return false;
+
+        this.datos.splice(indice, 1);
+        return true;
+    }
+}

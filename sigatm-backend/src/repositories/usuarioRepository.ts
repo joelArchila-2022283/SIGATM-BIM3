@@ -1,27 +1,40 @@
 import { Usuario } from '../models/usuario';
 import { usuariosSimulados } from '../data/usuariosData';
+import { Repositorio } from './baseRepository';
 
-export const usuarioRepository = {
-    obtenerTodos: (): Usuario[] => {
-        return usuariosSimulados;
-    },
-    obtenerPorId: (id: number): Usuario | undefined => {
-        return usuariosSimulados.find(u => u.id === id);
-    },
-    guardar: (usuario: Usuario): Usuario => {
-        usuariosSimulados.push(usuario);
+export class UsuarioRepository implements Repositorio<Usuario> {
+    private datos: Usuario[];
+
+    constructor() {
+        this.datos = usuariosSimulados;
+    }
+
+    public obtenerTodos(): Usuario[] {
+        return this.datos;
+    }
+
+    public obtenerPorId(id: number): Usuario | undefined {
+        return this.datos.find(u => u.id === id);
+    }
+
+    public guardar(usuario: Usuario): Usuario {
+        this.datos.push(usuario);
         return usuario;
-    },
-    actualizar: (id: number, datos: Partial<Usuario>): boolean => {
-        const indice = usuariosSimulados.findIndex(u => u.id === id);
+    }
+
+    public actualizar(id: number, datos: Partial<Usuario>): boolean {
+        const indice = this.datos.findIndex(u => u.id === id);
         if (indice === -1) return false;
-        usuariosSimulados[indice] = { ...usuariosSimulados[indice], ...datos };
-        return true;
-    },
-    eliminar: (id: number): boolean => {
-        const indice = usuariosSimulados.findIndex(u => u.id === id);
-        if (indice === -1) return false;
-        usuariosSimulados.splice(indice, 1);
+        
+        this.datos[indice] = { ...this.datos[indice], ...datos };
         return true;
     }
-};
+
+    public eliminar(id: number): boolean {
+        const indice = this.datos.findIndex(u => u.id === id);
+        if (indice === -1) return false;
+        
+        this.datos.splice(indice, 1);
+        return true;
+    }
+}
