@@ -1,7 +1,6 @@
 import { Equipo } from '../models/equipo';
 import { EquipoRepository } from '../repositories/equipoRepository';
 
-// 1. Instanciamos la clase (¡Importante!)
 const equipoRepo = new EquipoRepository();
 
 export const equipoService = {
