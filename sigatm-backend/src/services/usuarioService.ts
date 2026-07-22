@@ -1,17 +1,19 @@
 import { Usuario } from '../models/usuario';
-import { usuarioRepository } from '../repositories/usuarioRepository';
+import { UsuarioRepository } from '../repositories/usuarioRepository';
+
+const usuarioRepo = new UsuarioRepository();
 
 export const usuarioService = {
     obtenerTodos: (): Usuario[] => {
-        return usuarioRepository.obtenerTodos();
+        return usuarioRepo.obtenerTodos();
     },
 
     obtenerPorId: (id: number): Usuario | undefined => {
-        return usuarioRepository.obtenerPorId(id);
+        return usuarioRepo.obtenerPorId(id);
     },
 
     crear: (nuevoUsuario: Omit<Usuario, 'id'>): Usuario => {
-        const todos = usuarioRepository.obtenerTodos();
+        const todos = usuarioRepo.obtenerTodos();
         const nuevoId = todos.length > 0 ? Math.max(...todos.map(u => u.id)) + 1 : 1;
         
         const usuario: Usuario = {
@@ -19,14 +21,14 @@ export const usuarioService = {
             ...nuevoUsuario
         };
         
-        return usuarioRepository.guardar(usuario);
+        return usuarioRepo.guardar(usuario);
     },
 
     actualizar: (id: number, datosActualizados: Partial<Omit<Usuario, 'id'>>): boolean => {
-        return usuarioRepository.actualizar(id, datosActualizados);
+        return usuarioRepo.actualizar(id, datosActualizados);
     },
 
     eliminar: (id: number): boolean => {
-        return usuarioRepository.eliminar(id);
+        return usuarioRepo.eliminar(id);
     }
 };
