@@ -1,17 +1,20 @@
 import { Equipo } from '../models/equipo';
-import { equipoRepository } from '../repositories/equipoRepository';
+import { EquipoRepository } from '../repositories/equipoRepository';
+
+// 1. Instanciamos la clase (¡Importante!)
+const equipoRepo = new EquipoRepository();
 
 export const equipoService = {
     obtenerTodos: (): Equipo[] => {
-        return equipoRepository.obtenerTodos();
+        return equipoRepo.obtenerTodos();
     },
 
     obtenerPorId: (id: number): Equipo | undefined => {
-        return equipoRepository.obtenerPorId(id);
+        return equipoRepo.obtenerPorId(id);
     },
 
     crear: (nuevoEquipo: Omit<Equipo, 'id'>): Equipo => {
-        const todos = equipoRepository.obtenerTodos();
+        const todos = equipoRepo.obtenerTodos();
         const nuevoId = todos.length > 0 ? Math.max(...todos.map(e => e.id)) + 1 : 1;
         
         const equipo: Equipo = {
@@ -19,14 +22,14 @@ export const equipoService = {
             ...nuevoEquipo
         };
         
-        return equipoRepository.guardar(equipo);
+        return equipoRepo.guardar(equipo);
     },
 
     actualizar: (id: number, datosActualizados: Partial<Omit<Equipo, 'id'>>): boolean => {
-        return equipoRepository.actualizar(id, datosActualizados);
+        return equipoRepo.actualizar(id, datosActualizados);
     },
 
     eliminar: (id: number): boolean => {
-        return equipoRepository.eliminar(id);
+        return equipoRepo.eliminar(id);
     }
 };
