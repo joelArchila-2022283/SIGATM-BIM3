@@ -3,6 +3,11 @@ import { usuarioService } from '../services/usuarioService';
 import { equipoService } from '../services/equipoService';
 import { reporteService } from '../services/reporteService';
 import { mantenimientoService } from '../services/mantenimientoService';
+import { repuestoService } from '../services/repuestoService';
+import { tecnicoService } from '../services/tecnicoService';
+import { diagnosticoService } from '../services/diagnosticoService';
+import { mantenimientoRepuestoService } from '../services/mantenimientoRepuestoService';
+import { historialMantenimientoService } from '../services/historialMantenimientoService';
 import { EstadoEquipo } from '../models/enums';
 
 export async function getBody<T>(req: IncomingMessage): Promise<T> {
@@ -23,7 +28,7 @@ export async function handleRoutes(req: IncomingMessage, res: ServerResponse): P
     const url = req.url || '';
     const method = req.method;
 
-    // 1. RUTAS DE USUARIOS (/usuarios)
+    // RUTAS DE USUARIOS (/usuarios)
     if (url === '/usuarios' && method === 'GET') {
         const usuarios = await usuarioService.obtenerTodos();
         res.writeHead(200);
@@ -86,7 +91,7 @@ export async function handleRoutes(req: IncomingMessage, res: ServerResponse): P
         return;
     }
 
-    // 2. RUTAS DE EQUIPOS (/equipos)
+    // RUTAS DE EQUIPOS (/equipos)
     if (url === '/equipos' && method === 'GET') {
         const equipos = await equipoService.obtenerTodos();
         res.writeHead(200);
@@ -151,7 +156,7 @@ export async function handleRoutes(req: IncomingMessage, res: ServerResponse): P
         return;
     }
 
-    // 3. RUTAS DE REPORTES (/reportes)
+    // RUTAS DE REPORTES (/reportes)
     if (url === '/reportes' && method === 'GET') {
         const reportes = await reporteService.obtenerTodos();
         res.writeHead(200);
@@ -207,7 +212,7 @@ export async function handleRoutes(req: IncomingMessage, res: ServerResponse): P
         return;
     }
 
-    // 4. RUTAS DE MANTENIMIENTOS (/mantenimientos)
+    // RUTAS DE MANTENIMIENTOS (/mantenimientos)
     if (url === '/mantenimientos' && method === 'GET') {
         const mantenimientos = await mantenimientoService.obtenerTodos();
         res.writeHead(200);
@@ -260,6 +265,124 @@ export async function handleRoutes(req: IncomingMessage, res: ServerResponse): P
         }
         res.writeHead(200);
         res.end(JSON.stringify({ mensaje: 'Mantenimiento eliminado con éxito' }));
+        return;
+    }
+
+    //  RUTAS DE REPUESTOS (/repuestos)
+    if (url === '/repuestos' && method === 'GET') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await repuestoService.obtenerTodos()));
+        return;
+    }
+    if (url === '/repuestos' && method === 'POST') {
+        res.writeHead(201);
+        res.end(JSON.stringify(await repuestoService.crear(await getBody(req))));
+        return;
+    }
+    if (url.startsWith('/repuestos/') && method === 'GET') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await repuestoService.obtenerPorId(Number(url.split('/')[2]))));
+        return;
+    }
+    if (url.startsWith('/repuestos/') && method === 'PUT') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await repuestoService.actualizar(Number(url.split('/')[2]), await getBody(req))));
+        return;
+    }
+    if (url.startsWith('/repuestos/') && method === 'DELETE') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await repuestoService.eliminar(Number(url.split('/')[2]))));
+        return;
+    }
+
+    // RUTAS DE TECNICOS (/tecnicos)
+    if (url === '/tecnicos' && method === 'GET') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await tecnicoService.obtenerTodos()));
+        return;
+    }
+    if (url === '/tecnicos' && method === 'POST') {
+        res.writeHead(201);
+        res.end(JSON.stringify(await tecnicoService.crear(await getBody(req))));
+        return;
+    }
+    if (url.startsWith('/tecnicos/') && method === 'GET') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await tecnicoService.obtenerPorId(Number(url.split('/')[2]))));
+        return;
+    }
+    if (url.startsWith('/tecnicos/') && method === 'PUT') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await tecnicoService.actualizar(Number(url.split('/')[2]), await getBody(req))));
+        return;
+    }
+    if (url.startsWith('/tecnicos/') && method === 'DELETE') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await tecnicoService.eliminar(Number(url.split('/')[2]))));
+        return;
+    }
+
+    // RUTAS DE DIAGNOSTICOS (/diagnosticos)
+    if (url === '/diagnosticos' && method === 'GET') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await diagnosticoService.obtenerTodos()));
+        return;
+    }
+    if (url === '/diagnosticos' && method === 'POST') {
+        res.writeHead(201);
+        res.end(JSON.stringify(await diagnosticoService.crear(await getBody(req))));
+        return;
+    }
+    if (url.startsWith('/diagnosticos/') && method === 'GET') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await diagnosticoService.obtenerPorId(Number(url.split('/')[2]))));
+        return;
+    }
+    if (url.startsWith('/diagnosticos/') && method === 'PUT') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await diagnosticoService.actualizar(Number(url.split('/')[2]), await getBody(req))));
+        return;
+    }
+    if (url.startsWith('/diagnosticos/') && method === 'DELETE') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await diagnosticoService.eliminar(Number(url.split('/')[2]))));
+        return;
+    }
+
+    //  RUTAS MANTENIMIENTO-REPUESTOS (/mantenimiento-repuestos)
+    if (url === '/mantenimiento-repuestos' && method === 'GET') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await mantenimientoRepuestoService.obtenerTodos()));
+        return;
+    }
+    if (url === '/mantenimiento-repuestos' && method === 'POST') {
+        res.writeHead(201);
+        res.end(JSON.stringify(await mantenimientoRepuestoService.crear(await getBody(req))));
+        return;
+    }
+    if (url.startsWith('/mantenimiento-repuestos/') && method === 'DELETE') {
+        const partes = url.split('/');
+        await mantenimientoRepuestoService.eliminar(Number(partes[2]), Number(partes[3]));
+        res.writeHead(200);
+        res.end(JSON.stringify({ mensaje: 'Eliminado con éxito' }));
+        return;
+    }
+
+    // RUTAS HISTORIAL MANTENIMIENTO (/historial-mantenimiento)
+    if (url === '/historial-mantenimiento' && method === 'GET') {
+        res.writeHead(200);
+        res.end(JSON.stringify(await historialMantenimientoService.obtenerTodos()));
+        return;
+    }
+    if (url === '/historial-mantenimiento' && method === 'POST') {
+        res.writeHead(201);
+        res.end(JSON.stringify(await historialMantenimientoService.crear(await getBody(req))));
+        return;
+    }
+    if (url.startsWith('/historial-mantenimiento/mantenimiento/') && method === 'GET') {
+        const id = Number(url.split('/')[3]);
+        res.writeHead(200);
+        res.end(JSON.stringify(await historialMantenimientoService.obtenerPorMantenimiento(id)));
         return;
     }
 
