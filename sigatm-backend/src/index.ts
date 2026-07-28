@@ -1,3 +1,1 @@
-import { iniciarMenu } from './menu/menuPrincipal';
-
-iniciarMenu();
+import './api/server';
