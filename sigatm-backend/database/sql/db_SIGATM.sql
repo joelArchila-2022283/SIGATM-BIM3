@@ -116,3 +116,22 @@ CREATE TABLE Mantenimiento_Repuesto (
     FOREIGN KEY (id_mantenimiento) REFERENCES Mantenimiento(id_mantenimiento),
     FOREIGN KEY (id_repuesto) REFERENCES Repuesto(id_repuesto)
 );
+
+USE sigatm_in5cm;
+
+-- Insertar un Rol por defecto
+INSERT INTO Rol (nombre) VALUES ('ADMINISTRADOR') ON DUPLICATE KEY UPDATE id_rol=id_rol;
+
+-- Insertar un Departamento por defecto
+INSERT INTO Departamento (nombre) VALUES ('Sistemas') ON DUPLICATE KEY UPDATE id_departamento=id_departamento;
+
+-- Insertar un Tipo de Equipo por defecto
+INSERT INTO TipoEquipo (nombre) VALUES ('Computadora de Escritorio') ON DUPLICATE KEY UPDATE id_tipo_equipo=id_tipo_equipo;
+
+-- Insertar un Proveedor por defecto
+INSERT INTO Proveedor (nombre, contacto, direccion) VALUES ('Tech Supplier', '555-1234', 'Ciudad de Guatemala') ON DUPLICATE KEY UPDATE id_proveedor=id_proveedor;
+
+INSERT INTO rol (id_rol, nombre) VALUES 
+(2, 'TECNICO'),
+(3, 'USUARIO');
+
