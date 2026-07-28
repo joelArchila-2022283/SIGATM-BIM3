@@ -1,34 +1,22 @@
+import { reporteMysqlRepository } from '../repositories/reporteMysqlRepository';
 import { Reporte } from '../models/reporte';
-import { ReporteRepository } from '../repositories/reporteRepository';
 
-const reporteRepo = new ReporteRepository();
-
-export const reporteService = {
-    obtenerTodos: (): Reporte[] => {
-        return reporteRepo.obtenerTodos();
-    },
-
-    obtenerPorId: (id: number): Reporte | undefined => {
-        return reporteRepo.obtenerPorId(id);
-    },
-
-    crear: (nuevoReporte: Omit<Reporte, 'id'>): Reporte => {
-        const todos = reporteRepo.obtenerTodos();
-        const nuevoId = todos.length > 0 ? Math.max(...todos.map(r => r.id)) + 1 : 1;
-        
-        const reporte: Reporte = {
-            id: nuevoId,
-            ...nuevoReporte
-        };
-        
-        return reporteRepo.guardar(reporte);
-    },
-
-    actualizar: (id: number, datosActualizados: Partial<Omit<Reporte, 'id'>>): boolean => {
-        return reporteRepo.actualizar(id, datosActualizados);
-    },
-
-    eliminar: (id: number): boolean => {
-        return reporteRepo.eliminar(id);
+export class ReporteService {
+    async obtenerTodos(): Promise<Reporte[]> {
+        return await reporteMysqlRepository.obtenerTodos();
     }
-};
+    async obtenerPorId(id: number): Promise<Reporte | null> {
+        return await reporteMysqlRepository.obtenerPorId(id);
+    }
+    async crear(reporte: Omit<Reporte, 'id'>): Promise<Reporte> {
+        return await reporteMysqlRepository.crear(reporte);
+    }
+    async actualizar(id: number, reporte: Partial<Omit<Reporte, 'id'>>): Promise<boolean> {
+        return await reporteMysqlRepository.actualizar(id, reporte);
+    }
+    async eliminar(id: number): Promise<boolean> {
+        return await reporteMysqlRepository.eliminar(id);
+    }
+}
+
+export const reporteService = new ReporteService();
