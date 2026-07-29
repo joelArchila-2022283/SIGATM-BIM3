@@ -1,9 +1,9 @@
 import { tecnicoRepository } from '../repositories/tecnicoMysqlRepository';
 
 export const tecnicoService = {
-    obtenerTodos: () => tecnicoRepository.findAll(),
-    obtenerPorId: (id: number) => tecnicoRepository.findById(id),
-    crear: async (datos: any) => ({ id: await tecnicoRepository.create(datos), ...datos }),
-    actualizar: (id: number, datos: any) => tecnicoRepository.update(id, datos),
-    eliminar: (id: number) => tecnicoRepository.delete(id)
+    obtenerTodos: async () => await tecnicoRepository.obtenerTodos(),
+    obtenerPorId: async (id: number) => await tecnicoRepository.obtenerPorId(id),
+    crear: async (datos: any) => await tecnicoRepository.crear(datos),
+    actualizar: async (id: number, datos: any) => await tecnicoRepository.actualizar(id, datos),
+    eliminar: async (id: number) => await tecnicoRepository.eliminar(id)
 };

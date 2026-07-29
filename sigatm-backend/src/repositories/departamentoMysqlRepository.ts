@@ -12,18 +12,35 @@ export const departamentoRepository = {
         return rows[0] || null;
     },
 
-    async create(datos: { nombre: string; ubicacion?: string }) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'INSERT INTO departamento (nombre, ubicacion) VALUES (?, ?)',
-            [datos.nombre, datos.ubicacion || '']
+   
+    async create(departamento: any) {
+        const [result] = await pool.query(
+            'INSERT INTO departamento (nombre) VALUES (?)', 
+            [departamento.nombre]
         );
-        return result.insertId;
-    },
+        
+        return result; 
+    },       
 
-    async update(id: number, datos: { nombre?: string; ubicacion?: string }) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'UPDATE departamento SET nombre = COALESCE(?, nombre), ubicacion = COALESCE(?, ubicacion) WHERE id_departamento = ?',
-            [datos.nombre, datos.ubicacion, id]
+    async actualizar(id: number, usuario: any) {
+        const [result]: any = await pool.query(
+            `UPDATE usuario SET 
+                nombre = ?, 
+                apellido = ?, 
+                correo = ?, 
+                username = ?, 
+                id_rol = ?, 
+                id_departamento = ? 
+            WHERE id = ?`,
+            [
+                usuario.nombre,
+                usuario.apellido,
+                usuario.correo,
+                usuario.username,
+                usuario.rolId || usuario.id_rol,             // Toma el que venga
+                usuario.departamentoId || usuario.id_departamento, // Toma el que venga para que no sea null
+                id
+            ]
         );
         return result.affectedRows > 0;
     },

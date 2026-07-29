@@ -1,36 +1,35 @@
-import { pool } from '../config/database';
-import { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
+import { pool } from '../config/database'; 
 
 export const tipoEquipoRepository = {
     async findAll() {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM tipo_equipo');
+        const [rows] = await pool.query('SELECT * FROM TipoEquipo');
         return rows;
     },
 
     async findById(id: number) {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM tipo_equipo WHERE id_tipo_equipo = ?', [id]);
+        const [rows]: any = await pool.query('SELECT * FROM TipoEquipo WHERE id_tipo_equipo = ?', [id]);
         return rows[0] || null;
     },
 
-    async create(datos: { nombre: string; descripcion?: string }) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'INSERT INTO tipo_equipo (nombre, descripcion) VALUES (?, ?)',
-            [datos.nombre, datos.descripcion || '']
+    async create(datos: any) {
+        const [result]: any = await pool.query(
+            'INSERT INTO TipoEquipo (nombre) VALUES (?)',
+            [datos.nombre]
         );
-        return result.insertId;
+        return { id_tipo_equipo: result.insertId, nombre: datos.nombre };
     },
 
-    async update(id: number, datos: { nombre?: string; descripcion?: string }) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'UPDATE tipo_equipo SET nombre = COALESCE(?, nombre), descripcion = COALESCE(?, descripcion) WHERE id_tipo_equipo = ?',
-            [datos.nombre, datos.descripcion, id]
+    async update(id: number, datos: any) {
+        const [result]: any = await pool.query(
+            'UPDATE TipoEquipo SET nombre = ? WHERE id_tipo_equipo = ?',
+            [datos.nombre, id]
         );
         return result.affectedRows > 0;
     },
 
     async delete(id: number) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'DELETE FROM tipo_equipo WHERE id_tipo_equipo = ?',
+        const [result]: any = await pool.query(
+            'DELETE FROM TipoEquipo WHERE id_tipo_equipo = ?',
             [id]
         );
         return result.affectedRows > 0;

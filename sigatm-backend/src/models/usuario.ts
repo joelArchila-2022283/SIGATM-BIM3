@@ -7,4 +7,5 @@ export interface Usuario {
   username: string;
   password: string;
   rolId: number; 
+  departamentoId: number;
 }

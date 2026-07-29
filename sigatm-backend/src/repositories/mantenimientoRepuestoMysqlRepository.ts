@@ -1,21 +1,39 @@
 import { pool } from '../config/database';
-import { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 
 export const mantenimientoRepuestoRepository = {
     async findAll() {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM mantenimiento_repuesto');
+        const [rows] = await pool.query('SELECT * FROM Mantenimiento_Repuesto');
         return rows;
     },
-    async create(datos: { mantenimientoId: number; repuestoId: number; cantidadUsada: number }) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'INSERT INTO mantenimiento_repuesto (id_mantenimiento, id_repuesto, cantidad_usada) VALUES (?, ?, ?)',
-            [datos.mantenimientoId, datos.repuestoId, datos.cantidadUsada]
+
+    async findByIds(mantenimientoId: number, repuestoId: number) {
+        const [rows]: any = await pool.query(
+            'SELECT * FROM Mantenimiento_Repuesto WHERE id_mantenimiento = ? AND id_repuesto = ?',
+            [mantenimientoId, repuestoId]
         );
-        return result.affectedRows > 0;
+        return rows[0] || null;
     },
+
+    async create(datos: any) {
+        const mantenimientoId = datos.id_mantenimiento ?? datos.mantenimientoId;
+        const repuestoId = datos.id_repuesto ?? datos.repuestoId;
+        const cantidadUsada = datos.cantidad_usada ?? datos.cantidadUsada ?? 1;
+
+        await pool.query(
+            'INSERT INTO Mantenimiento_Repuesto (id_mantenimiento, id_repuesto, cantidad_usada) VALUES (?, ?, ?)',
+            [mantenimientoId, repuestoId, cantidadUsada]
+        );
+
+        return {
+            id_mantenimiento: mantenimientoId,
+            id_repuesto: repuestoId,
+            cantidad_usada: cantidadUsada
+        };
+    },
+
     async delete(mantenimientoId: number, repuestoId: number) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'DELETE FROM mantenimiento_repuesto WHERE id_mantenimiento = ? AND id_repuesto = ?',
+        const [result]: any = await pool.query(
+            'DELETE FROM Mantenimiento_Repuesto WHERE id_mantenimiento = ? AND id_repuesto = ?',
             [mantenimientoId, repuestoId]
         );
         return result.affectedRows > 0;

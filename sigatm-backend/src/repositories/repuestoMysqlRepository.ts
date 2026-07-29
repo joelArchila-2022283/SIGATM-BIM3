@@ -1,31 +1,55 @@
 import { pool } from '../config/database';
-import { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 
 export const repuestoRepository = {
     async findAll() {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM repuesto');
+        const [rows] = await pool.query('SELECT * FROM Repuesto');
         return rows;
     },
+
     async findById(id: number) {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM repuesto WHERE id_repuesto = ?', [id]);
+        const [rows]: any = await pool.query('SELECT * FROM Repuesto WHERE id_repuesto = ?', [id]);
         return rows[0] || null;
     },
-    async create(datos: { nombre: string; descripcion?: string; cantidad: number; proveedorId: number }) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'INSERT INTO repuesto (nombre, descripcion, cantidad, id_proveedor) VALUES (?, ?, ?, ?)',
-            [datos.nombre, datos.descripcion || '', datos.cantidad, datos.proveedorId]
+
+    async create(datos: any) {
+        const proveedorId = datos.id_proveedor ?? datos.proveedorId;
+
+        const [result]: any = await pool.query(
+            'INSERT INTO Repuesto (nombre, descripcion, cantidad, id_proveedor) VALUES (?, ?, ?, ?)',
+            [
+                datos.nombre,
+                datos.descripcion ?? null,
+                datos.cantidad ?? 0,
+                proveedorId
+            ]
         );
-        return result.insertId;
+        return { 
+            id_repuesto: result.insertId, 
+            nombre: datos.nombre, 
+            descripcion: datos.descripcion, 
+            cantidad: datos.cantidad ?? 0, 
+            id_proveedor: proveedorId 
+        };
     },
-    async update(id: number, datos: { nombre?: string; descripcion?: string; cantidad?: number; proveedorId?: number }) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'UPDATE repuesto SET nombre = COALESCE(?, nombre), descripcion = COALESCE(?, descripcion), cantidad = COALESCE(?, cantidad), id_proveedor = COALESCE(?, id_proveedor) WHERE id_repuesto = ?',
-            [datos.nombre, datos.descripcion, datos.cantidad, datos.proveedorId, id]
+
+    async update(id: number, datos: any) {
+        const proveedorId = datos.id_proveedor ?? datos.proveedorId;
+
+        const [result]: any = await pool.query(
+            'UPDATE Repuesto SET nombre = ?, descripcion = ?, cantidad = ?, id_proveedor = ? WHERE id_repuesto = ?',
+            [
+                datos.nombre,
+                datos.descripcion ?? null,
+                datos.cantidad ?? 0,
+                proveedorId,
+                id
+            ]
         );
         return result.affectedRows > 0;
     },
+
     async delete(id: number) {
-        const [result] = await pool.query<ResultSetHeader>('DELETE FROM repuesto WHERE id_repuesto = ?', [id]);
+        const [result]: any = await pool.query('DELETE FROM Repuesto WHERE id_repuesto = ?', [id]);
         return result.affectedRows > 0;
     }
 };

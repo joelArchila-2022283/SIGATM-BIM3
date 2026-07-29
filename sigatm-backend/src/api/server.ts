@@ -1,16 +1,21 @@
-import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { handleRoutes } from './router';
+import { createServer } from 'http';
 
 const PORT = 3000;
 
-const server = createServer(async (req: IncomingMessage, res: ServerResponse) => {
-    res.setHeader('Content-Type', 'application/json');
-
+const server = createServer(async (req, res) => {
     try {
         await handleRoutes(req, res);
     } catch (error: any) {
-        res.writeHead(500);
-        res.end(JSON.stringify({ error: error.message }));
+        console.error('Error no capturado:', error);
+        
+        if (!res.headersSent) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ 
+                mensaje: 'Error interno del servidor', 
+                error: error.message 
+            }));
+        }
     }
 });
 

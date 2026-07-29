@@ -1,36 +1,40 @@
-import { pool } from '../config/database';
-import { RowDataPacket, ResultSetHeader } from 'mysql2/promise';
+import { pool } from '../config/database'; // Ajusta la ruta a tu conexión DB
 
 export const proveedorRepository = {
     async findAll() {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM proveedor');
+        const [rows] = await pool.query('SELECT * FROM Proveedor');
         return rows;
     },
 
     async findById(id: number) {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM proveedor WHERE id_proveedor = ?', [id]);
+        const [rows]: any = await pool.query('SELECT * FROM Proveedor WHERE id_proveedor = ?', [id]);
         return rows[0] || null;
     },
 
-    async create(datos: { nombre: string; contacto?: string; telefono?: string; correo?: string }) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'INSERT INTO proveedor (nombre, contacto, telefono, correo) VALUES (?, ?, ?, ?)',
-            [datos.nombre, datos.contacto || '', datos.telefono || '', datos.correo || '']
+    async create(datos: any) {
+        const [result]: any = await pool.query(
+            'INSERT INTO Proveedor (nombre, contacto, direccion) VALUES (?, ?, ?)',
+            [datos.nombre, datos.contacto ?? null, datos.direccion ?? null]
         );
-        return result.insertId;
+        return { 
+            id_proveedor: result.insertId, 
+            nombre: datos.nombre, 
+            contacto: datos.contacto, 
+            direccion: datos.direccion 
+        };
     },
 
-    async update(id: number, datos: { nombre?: string; contacto?: string; telefono?: string; correo?: string }) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'UPDATE proveedor SET nombre = COALESCE(?, nombre), contacto = COALESCE(?, contacto), telefono = COALESCE(?, telefono), correo = COALESCE(?, correo) WHERE id_proveedor = ?',
-            [datos.nombre, datos.contacto, datos.telefono, datos.correo, id]
+    async update(id: number, datos: any) {
+        const [result]: any = await pool.query(
+            'UPDATE Proveedor SET nombre = ?, contacto = ?, direccion = ? WHERE id_proveedor = ?',
+            [datos.nombre, datos.contacto ?? null, datos.direccion ?? null, id]
         );
         return result.affectedRows > 0;
     },
 
     async delete(id: number) {
-        const [result] = await pool.query<ResultSetHeader>(
-            'DELETE FROM proveedor WHERE id_proveedor = ?',
+        const [result]: any = await pool.query(
+            'DELETE FROM Proveedor WHERE id_proveedor = ?',
             [id]
         );
         return result.affectedRows > 0;

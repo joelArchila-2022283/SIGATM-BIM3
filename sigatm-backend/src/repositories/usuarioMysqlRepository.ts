@@ -42,25 +42,23 @@ export class UsuarioMysqlRepository {
     }
 
     // UPDATE
-    async actualizar(id: number, usuario: Partial<Omit<Usuario, 'id'>>): Promise<boolean> {
-        const sql = `
-            UPDATE Usuario 
+    async actualizar(id: number, usuario: any) {
+        const [result]: any = await pool.query(
+            `UPDATE Usuario 
             SET nombre = ?, apellido = ?, correo = ?, telefono = ?, username = ?, password = ?, id_rol = ?, id_departamento = ?
-            WHERE id_usuario = ?
-        `;
-        const valores = [
-            usuario.nombre ?? null,
-            usuario.apellido ?? null,
-            usuario.correo ?? null,
-            (usuario as any).telefono ?? null,
-            usuario.username ?? null,
-            usuario.password ?? null,
-            (usuario as any).idRol ?? (usuario as any).rolId ?? null,
-            (usuario as any).idDepartamento ?? null,
-            id
-        ];
-
-        const [result]: any = await pool.execute(sql, valores as any[]);
+            WHERE id_usuario = ?`,
+            [
+                usuario.nombre,
+                usuario.apellido,
+                usuario.correo,
+                usuario.telefono || '',
+                usuario.username,
+                usuario.password,
+                usuario.id_rol ?? usuario.rolId,
+                usuario.id_departamento ?? usuario.departamentoId,
+                id
+            ]
+        );
         return result.affectedRows > 0;
     }
 

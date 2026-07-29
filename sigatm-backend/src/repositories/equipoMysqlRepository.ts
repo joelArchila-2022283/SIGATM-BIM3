@@ -42,26 +42,24 @@ export class EquipoMysqlRepository {
         };
     }
 
-    async actualizar(id: number, equipo: Partial<Omit<Equipo, 'id'>>): Promise<boolean> {
-        const sql = `
-            UPDATE Equipo 
+    async actualizar(id: number, equipo: any) {
+        const [result]: any = await pool.query(
+            `UPDATE Equipo 
             SET nombre = ?, descripcion = ?, numero_serie = ?, fecha_adquisicion = ?, 
                 id_tipo_equipo = ?, id_proveedor = ?, id_departamento = ?, estado = ?
-            WHERE id_equipo = ?
-        `;
-        const valores = [
-            equipo.nombre ?? null,
-            equipo.descripcion ?? null,
-            equipo.numeroSerie ?? null,
-            equipo.fechaAdquisicion ?? null,
-            (equipo as any).idTipoEquipo ?? (equipo as any).tipoEquipoId ?? null,
-            (equipo as any).idProveedor ?? (equipo as any).proveedorId ?? null,
-            (equipo as any).idDepartamento ?? (equipo as any).departamentoId ?? null,
-            equipo.estado ?? null,
-            id
-        ];
-
-        const [result]: any = await pool.execute(sql, valores as any[]);
+            WHERE id_equipo = ?`,
+            [
+                equipo.nombre,
+                equipo.descripcion || '',
+                equipo.numero_serie ?? equipo.numeroSerie ?? '',
+                equipo.fecha_adquisicion ?? equipo.fechaAdquisicion ?? new Date(),
+                equipo.id_tipo_equipo ?? equipo.tipoEquipoId ?? equipo.tipoId,
+                equipo.id_proveedor ?? equipo.proveedorId,
+                equipo.id_departamento ?? equipo.departamentoId,
+                equipo.estado || 'Activo',
+                id
+            ]
+        );
         return result.affectedRows > 0;
     }
 
